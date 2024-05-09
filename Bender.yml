@@ -52,6 +52,8 @@ sources:
       - src/backend/idma_obi_write.sv
       - src/backend/idma_tilelink_read.sv
       - src/backend/idma_tilelink_write.sv
+      - src/backend/idma_txrx_read.sv
+      - src/backend/idma_txrx_write.sv
 
   # Generated content
   - target: rtl
@@ -119,6 +121,7 @@ sources:
       # Level 2
       - test/future/idma_obi2axi_bridge.sv
       - test/future/idma_tilelink2axi_bridge.sv
+      - test/future/idma_txrx2axi_bridge.sv
 
   # Generated content
   - target: idma_test

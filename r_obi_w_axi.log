@@ -1,0 +1,26 @@
+# //  Questa Sim-64
+# //  Version 2022.3_1 linux_x86_64 Aug 12 2022
+# //
+# //  Copyright 1991-2022 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# vsim -t 1ps -voptargs="+acc" "+job_file=jobs/backend_r_obi_w_axi/simple.txt" -logfile r_obi_w_axi.log -wlf r_obi_w_axi.wlf tb_idma_backend_r_obi_w_axi -do "source start.tcl; source wave/backend_r_obi_w_axi.do; run -all" 
+# Start time: 15:16:12 on Apr 30,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Error: (vopt-13130) Failed to find design unit tb_idma_backend_r_obi_w_axi.
+#         Searched libraries:
+#             work
+# Optimization failed
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=1, Warnings=1.
+# Error loading design
+# End time: 15:16:12 on Apr 30,2024, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 1

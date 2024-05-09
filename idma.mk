@@ -25,7 +25,10 @@ IDMA_BASE_IDS    := \
 					rw_axi \
 					r_obi_w_axi \
 					r_axi_w_obi \
-					rw_axi_rw_axis
+					rw_axi_rw_axis	\
+					r_obi_w_txrx	\
+					r_txrx_w_obi	\
+					rw_obi_rw_txrx
 IDMA_OCCAMY_IDS  := \
 					r_obi_rw_init_w_axi \
 					r_axi_rw_init_rw_obi
@@ -101,7 +104,8 @@ IDMA_DB_FILES   := $(IDMA_DB_DIR)/idma_axi.yml \
                    $(IDMA_DB_DIR)/idma_axi_stream.yml \
                    $(IDMA_DB_DIR)/idma_init.yml \
                    $(IDMA_DB_DIR)/idma_obi.yml \
-                   $(IDMA_DB_DIR)/idma_tilelink.yml
+                   $(IDMA_DB_DIR)/idma_tilelink.yml	\
+				   $(IDMA_DB_DIR)/idma_txrx.yml
 IDMA_RTL_FILES  := $(IDMA_RTL_DIR)/idma_transport_layer \
 				   $(IDMA_RTL_DIR)/idma_legalizer \
 				   $(IDMA_RTL_DIR)/idma_backend \

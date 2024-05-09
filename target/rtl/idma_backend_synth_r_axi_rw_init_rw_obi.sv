@@ -11,6 +11,7 @@
 `include "idma/typedef.svh"
 `include "obi/typedef.svh"
 `include "tilelink/typedef.svh"
+`include "txrx/typedef.svh"
 
 /// Synthesis wrapper for the iDMA backend. Unpacks all the interfaces to simple logic vectors
 module idma_backend_synth_r_axi_rw_init_rw_obi #(

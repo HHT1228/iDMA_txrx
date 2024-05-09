@@ -94,7 +94,8 @@ package idma_pkg;
         AXI_LITE   = 'd2,
         TILELINK   = 'd3,
         INIT       = 'd4,
-        AXI_STREAM = 'd5
+        AXI_STREAM = 'd5,
+        TXRX       = 'd6
     } protocol_e;
 
     /// Supported Protocols type

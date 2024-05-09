@@ -1,0 +1,4 @@
+# source scripts/start_vsim.tcl
+# Active logfile is not in simulation mode
+#  run -all
+# No Design Loaded!

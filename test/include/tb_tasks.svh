@@ -119,6 +119,44 @@
     endtask
 `endif
 
+`ifdef PROT_TXRX
+    // write a byte to the TXRX AXI-attached memory
+    task write_byte_txrx_axi_mem (
+        input byte_t byte_i,
+        input addr_t addr_i
+    );
+        i_txrx_axi_sim_mem.mem[addr_i] = byte_i;
+    endtask
+
+    // read a byte from the TXRX AXI-attached memory
+    task read_byte_txrx_axi_mem (
+        output byte_t byte_o,
+        input  addr_t addr_i
+    );
+        if (i_txrx_axi_sim_mem.mem.exists(addr_i))
+            byte_o = i_txrx_axi_sim_mem.mem[addr_i];
+        else
+            byte_o = '1;
+    endtask
+`else
+    // write a byte to the TXRX AXI-attached memory
+    task write_byte_txrx_axi_mem (
+        input byte_t byte_i,
+        input addr_t addr_i
+    );
+        $fatal(1, "TXRX Protocol not available");
+    endtask
+
+    // read a byte from the TXRX AXI-attached memory
+    task read_byte_txrx_axi_mem (
+        output byte_t byte_o,
+        input  addr_t addr_i
+    );
+        $fatal(1, "TXRX Protocol not available");
+        byte_o = 'x;
+    endtask
+`endif
+
 `ifdef PROT_TILELINK
     // write a byte to the TileLink AXI-attached memory
     task write_byte_tilelink_axi_mem (
@@ -243,6 +281,7 @@
                 now++;
                 continue; // Omit checks against INIT terminate events
             end
+            idma_pkg::TXRX: read_byte_txrx_axi_mem(data, addr_i + now);
             default: $fatal(1, "compare_mem for protocol %d not implemented!", protocol);
             endcase
             // omit check against ff (DMA init memory state to simplify error model - ideally this will be rewritten at some point)
@@ -335,6 +374,10 @@
                 idma_pkg::AXI_STREAM: begin
                     model.write_byte              ( ~{to_write[3:0], to_write[7:4]}, now_r.src_addr + now, idma_pkg::AXI_STREAM );
                     write_byte_axis_axi_mem ( ~{to_write[3:0], to_write[7:4]}, now_r.src_addr + now );
+                end
+                idma_pkg::TXRX: begin
+                    model.write_byte ( to_write, now_r.src_addr + now, idma_pkg::TXRX );
+                    write_byte_txrx_axi_mem ( to_write, now_r.src_addr + now );
                 end
                 default: $fatal(1, "init_mem not implemented for used protocol!");
                 endcase

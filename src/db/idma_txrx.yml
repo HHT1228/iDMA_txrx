@@ -1,0 +1,142 @@
+prefix: "txrx"
+protocol_enum: "TXRX"
+full_name: "TXRX"
+tb_define: "PROT_TXRX"
+bursts: "not_supported"
+legalizer_force_decouple: "false"
+read_meta_channel: "a_chan"
+write_meta_channel: "a_chan"
+combined_aw_and_w: "true"
+read_slave: "false"
+passive_req: "false"
+meta_channel_width: "localparam int unsigned txrx_a_chan_width = $bits(txrx_a_chan_t);"
+typedefs: |
+    `TXRX_TYPEDEF_TYPE_A_CHAN_T(txrx_a_chan_t, data_t)
+    `TXRX_TYPEDEF_TYPE_R_CHAN_T(txrx_r_chan_t, data_t, tf_len_t)
+
+    `TXRX_TYPEDEF_REQ_T(txrx_req_t, txrx_a_chan_t)
+    `TXRX_TYPEDEF_RSP_T(txrx_rsp_t, txrx_r_chan_t)
+# TODO: Do we need a protocol bridge?
+bridge_template: |
+    idma_txrx2axi_bridge #(
+        .DataWidth ( DataWidth    ),
+        .AddrWidth ( AddrWidth    ),
+        .UserWidth ( UserWidth    ),
+        .IdWidth   ( AxiIdWidth   ),
+        .txrx_req_t ( txrx_req_t    ),
+        .txrx_rsp_t ( txrx_rsp_t    ),
+        .axi_req_t ( axi_req_t    ),
+        .axi_rsp_t ( axi_rsp_t    )
+    ) i_txrx2axi_bridge_${port} (
+        .clk_i     ( clk ),
+        .rst_ni    ( rst_n ),
+        .txrx_req_i ( txrx_${port}_req ),
+        .txrx_rsp_o ( txrx_${port}_rsp ),
+        .axi_req_o ( txrx_axi_${port}_req ),
+        .axi_rsp_i ( txrx_axi_${port}_rsp )
+    );
+# TODO: Do we need a legalizer?
+legalizer_read_meta_channel: |
+    r_req_o.ar_req.txrx.a_chan = '{
+        data: '0
+    };
+legalizer_write_meta_channel: |
+    w_req_o.aw_req.txrx.a_chan = '{
+        data: '0
+    };
+read_template: |
+    idma_txrx_read #(
+        .StrbWidth        ( StrbWidth           ),
+        .byte_t           ( byte_t              ),
+        .strb_t           ( strb_t              ),
+        .r_dp_req_t       ( r_dp_req_t          ),
+        .r_dp_rsp_t       ( r_dp_rsp_t          ),
+        .read_meta_chan_t ( read_meta_channel_t ),
+        .read_req_t       ( ${req_t}           ),
+        .read_rsp_t       ( ${rsp_t}           )
+    ) i_idma_txrx_read (
+        .r_dp_req_i        ( r_dp_req_i ),
+        .r_dp_valid_i      ( ${r_dp_valid_i} ),
+        .r_dp_ready_o      ( ${r_dp_ready_o} ),
+        .r_dp_rsp_o        ( ${r_dp_rsp_o} ),
+        .r_dp_valid_o      ( ${r_dp_valid_o} ),
+        .r_dp_ready_i      ( ${r_dp_ready_i} ),
+        .read_meta_req_i   ( ${read_meta_request} ),
+        .read_meta_valid_i ( ${read_meta_valid} ),
+        .read_meta_ready_o ( ${read_meta_ready} ),
+        .read_req_o        ( ${read_request} ),
+        .read_rsp_i        ( ${read_response} ),
+        .r_chan_valid_o    ( ${r_chan_valid} ),
+        .r_chan_ready_o    ( ${r_chan_ready} ),
+        .buffer_in_o       ( ${buffer_in} ),
+        .buffer_in_valid_o ( ${buffer_in_valid} ),
+        .buffer_in_ready_i ( buffer_in_ready )
+    );
+write_template: |
+    idma_txrx_write #(
+        .StrbWidth            ( StrbWidth            ),
+        .MaskInvalidData      ( MaskInvalidData      ),
+        .byte_t               ( byte_t               ),
+        .data_t               ( data_t               ),
+        .strb_t               ( strb_t               ),
+        .w_dp_req_t           ( w_dp_req_t           ),
+        .w_dp_rsp_t           ( w_dp_rsp_t           ),
+        .write_meta_channel_t ( write_meta_channel_t ),
+        .write_req_t          ( ${req_t}            ),
+        .write_rsp_t          ( ${rsp_t}            )
+    ) i_idma_txrx_write (
+        .w_dp_req_i         ( w_dp_req_i ),
+        .w_dp_valid_i       ( ${w_dp_valid_i} ),
+        .w_dp_ready_o       ( ${w_dp_ready_o} ),
+        .dp_poison_i        ( dp_poison_i ),
+        .w_dp_rsp_o         ( ${w_dp_rsp_o} ),
+        .w_dp_valid_o       ( ${w_dp_valid_o} ),
+        .w_dp_ready_i       ( ${w_dp_ready_i} ),
+        .aw_req_i           ( ${write_meta_request} ),
+        .aw_valid_i         ( ${write_meta_valid} ),
+        .aw_ready_o         ( ${write_meta_ready}  ),
+        .write_req_o        ( ${write_request} ),
+        .write_rsp_i        ( ${write_response} ),
+        .buffer_out_i       ( buffer_out_shifted ),
+        .buffer_out_valid_i ( buffer_out_valid_shifted ),
+        .buffer_out_ready_o ( ${buffer_out_ready} )
+    );
+synth_wrapper_ports_write: |
+    output data_t                  txrx_write_req_a_data_o,
+    output logic                   txrx_write_req_a_valid_o,
+
+    input tf_len_t                 txrx_write_rsp_r_datasize_i,
+    input tf_len_t                 txrx_write_rsp_r_bytes_left_i,
+    input logic                    txrx_write_rsp_r_req_i,
+    input logic                    txrx_write_rsp_r_ready_i,
+synth_wrapper_ports_read: |
+    output data_t                  txrx_read_req_a_ready_o,
+
+    input data_t                   txrx_read_rsp_r_data_i,
+    input tf_len_t                 txrx_read_rsp_r_datasize_i,
+    input tf_len_t                 txrx_read_rsp_r_bytes_left_i,
+    input logic                    txrx_read_rsp_r_valid_i,
+synth_wrapper_assign_write: |
+    assign txrx_write_req_a_data_o  = txrx_write_req.a.data;
+    assign txrx_write_req_a_valid_o = txrx_write_req.valid;
+
+    assign txrx_write_rsp.r.datasize    = txrx_write_rsp_r_datasize_i;
+    assign txrx_write_rsp.r.bytes_left  = txrx_write_rsp_r_bytes_left_i;
+    assign txrx_write_rsp.req           = txrx_write_rsp_r_req_i;
+    assign  txrx_write_rsp.ready        = txrx_write_rsp_r_ready_i;
+synth_wrapper_assign_read: |
+    assign txrx_read_req_a_ready_o = txrx_read_req.ready;
+
+    assign txrx_read_rsp.r.data = txrx_read_rsp_r_data_i;
+    assign txrx_read_rsp.r.datasize = txrx_read_rsp_r_datasize_i;
+    assign txrx_read_rsp.r.bytes_left = txrx_read_rsp_r_bytes_left_i;
+    assign txrx_read_rsp.valid = txrx_read_rsp_r_valid_i;
+trace_signals:
+    read:
+        rsp:
+            valid: txrx_read_rsp_i.valid
+            ready: txrx_read_req_o.ready
+    write:
+        req:
+            valid: txrx_write_req_o.valid
+            ready: txrx_write_rsp_i.ready

@@ -13,6 +13,7 @@
 `include "idma/typedef.svh"
 `include "obi/typedef.svh"
 `include "tilelink/typedef.svh"
+`include "txrx/typedef.svh"
 
 // Protocol testbench defines
 `define PROT_AXI4
@@ -393,8 +394,9 @@ typedef struct packed {
         axi_pkg::resp_t werr[addr_t];
     } dummy_mem_t;
 
-    dummy_mem_t i_axis_axi_sim_mem;
     dummy_mem_t i_axil_axi_sim_mem;
+    dummy_mem_t i_axis_axi_sim_mem;
+    dummy_mem_t i_txrx_axi_sim_mem;
     dummy_mem_t i_tilelink_axi_sim_mem;
 
     //--------------------------------------

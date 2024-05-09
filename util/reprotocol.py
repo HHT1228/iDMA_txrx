@@ -12,7 +12,7 @@ import argparse
 import random
 import sys
 
-SUPP_PROTOCOLS = ['0', '1', '2', '3', '4', '5']
+SUPP_PROTOCOLS = ['0', '1', '2', '3', '4', '5', '6']
 
 # Parse Arguments
 parser = argparse.ArgumentParser(

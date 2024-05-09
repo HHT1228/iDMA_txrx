@@ -13,6 +13,7 @@
 `include "idma/typedef.svh"
 `include "obi/typedef.svh"
 `include "tilelink/typedef.svh"
+`include "txrx/typedef.svh"
 
 // Protocol testbench defines
 ${tb_defines}
@@ -1095,7 +1096,7 @@ axi_rsp_mem       )
             case(now.dst_protocol)
     % for protocol in used_write_protocols:
         idma_pkg::${database[protocol]['protocol_enum']}:
-        % if (protocol == 'axi') or (protocol == 'axis') or (protocol == 'obi') or (protocol == 'init'):
+        % if (protocol == 'axi') or (protocol == 'axis') or (protocol == 'obi') or (protocol == 'init') or (protocol == 'txrx'):
                 id = now.id;
         % elif protocol == 'axi_lite':
                 id = now.id[2:0];

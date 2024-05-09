@@ -331,6 +331,235 @@
 `endif \
 `endif
 
+// The tracer for the r_obi_w_txrx iDMA
+`define IDMA_TRACER_R_OBI_W_TXRX(__backend_inst, __out_f) \
+`ifndef SYNTHESYS \
+`ifndef VERILATOR \
+    initial begin : inital_tracer_r_obi_w_txrx \
+        automatic bit first_iter = 1; \
+        automatic integer tf; \
+        automatic `IDMA_TRACER_MAX_TYPE cnst [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE meta [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE busy [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE bus [string]; \
+        automatic string trace; \
+        #0; \
+        tf = $fopen(__out_f, "w"); \
+        $display("[iDMA Tracer] Logging %s to %s", `"__backend_inst`", __out_f); \
+        forever begin \
+            @(posedge __backend_inst``.clk_i); \
+            if(__backend_inst``.rst_ni & |__backend_inst``.busy_o) begin \
+                /* Trace */ \
+                trace = "{"; \
+                /* Constants */ \
+                cnst = '{ \
+                    "inst"               : `"__backend_inst`", \
+                    "identifier"         : "r_obi_w_txrx", \
+                    "data_width"         : __backend_inst``.DataWidth, \
+                    "addr_width"         : __backend_inst``.AddrWidth, \
+                    "user_width"         : __backend_inst``.UserWidth, \
+                    "axi_id_width"       : __backend_inst``.AxiIdWidth, \
+                    "num_ax_in_flight"   : __backend_inst``.NumAxInFlight, \
+                    "buffer_depth"       : __backend_inst``.BufferDepth, \
+                    "tf_len_width"       : __backend_inst``.TFLenWidth, \
+                    "mem_sys_depth"      : __backend_inst``.MemSysDepth, \
+                    "combined_shifter"   : __backend_inst``.CombinedShifter, \
+                    "rw_coupling_avail"  : __backend_inst``.RAWCouplingAvail, \
+                    "mask_invalid_data"  : __backend_inst``.MaskInvalidData, \
+                    "hardware_legalizer" : __backend_inst``.HardwareLegalizer, \
+                    "reject_zero_tfs"    : __backend_inst``.RejectZeroTransfers, \
+                    "error_cap"          : __backend_inst``.ErrorCap, \
+                    "print_fifo_info"    : __backend_inst``.PrintFifoInfo \
+                }; \
+                meta = '{ \
+                    "time" : $time() \
+                }; \
+                busy = '{ \
+                    "buffer"      : __backend_inst``.busy_o.buffer_busy, \
+                    "r_dp"        : __backend_inst``.busy_o.r_dp_busy, \
+                    "w_dp"        : __backend_inst``.busy_o.w_dp_busy, \
+                    "r_leg"       : __backend_inst``.busy_o.r_leg_busy, \
+                    "w_leg"       : __backend_inst``.busy_o.w_leg_busy, \
+                    "eh_fsm"      : __backend_inst``.busy_o.eh_fsm_busy, \
+                    "eh_cnt"      : __backend_inst``.busy_o.eh_cnt_busy, \
+                    "raw_coupler" : __backend_inst``.busy_o.raw_coupler_busy \
+                }; \
+                bus = '{ \
+                    "obi_rsp_valid": __backend_inst``.obi_read_req_o.req, \
+                    "obi_rsp_ready": __backend_inst``.obi_read_rsp_i.gnt, \
+                    "obi_rsp_write_en": __backend_inst``.obi_read_req_o.a.we, \
+                    "txrx_req_valid": __backend_inst``.txrx_write_req_o.valid, \
+                    "txrx_req_ready": __backend_inst``.txrx_write_rsp_i.ready \
+                }; \
+                /* Assembly */ \
+                `IDMA_TRACER_STR_ASSEMBLY(cnst, first_iter); \
+                `IDMA_TRACER_STR_ASSEMBLY(meta, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(busy, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(bus, 1); \
+                `IDMA_TRACER_CLEAR_COND(first_iter); \
+                /* Commit */ \
+                $fwrite(tf, $sformatf("%s}\n", trace)); \
+            end \
+        end \
+    end \
+`endif \
+`endif
+
+// The tracer for the r_txrx_w_obi iDMA
+`define IDMA_TRACER_R_TXRX_W_OBI(__backend_inst, __out_f) \
+`ifndef SYNTHESYS \
+`ifndef VERILATOR \
+    initial begin : inital_tracer_r_txrx_w_obi \
+        automatic bit first_iter = 1; \
+        automatic integer tf; \
+        automatic `IDMA_TRACER_MAX_TYPE cnst [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE meta [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE busy [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE bus [string]; \
+        automatic string trace; \
+        #0; \
+        tf = $fopen(__out_f, "w"); \
+        $display("[iDMA Tracer] Logging %s to %s", `"__backend_inst`", __out_f); \
+        forever begin \
+            @(posedge __backend_inst``.clk_i); \
+            if(__backend_inst``.rst_ni & |__backend_inst``.busy_o) begin \
+                /* Trace */ \
+                trace = "{"; \
+                /* Constants */ \
+                cnst = '{ \
+                    "inst"               : `"__backend_inst`", \
+                    "identifier"         : "r_txrx_w_obi", \
+                    "data_width"         : __backend_inst``.DataWidth, \
+                    "addr_width"         : __backend_inst``.AddrWidth, \
+                    "user_width"         : __backend_inst``.UserWidth, \
+                    "axi_id_width"       : __backend_inst``.AxiIdWidth, \
+                    "num_ax_in_flight"   : __backend_inst``.NumAxInFlight, \
+                    "buffer_depth"       : __backend_inst``.BufferDepth, \
+                    "tf_len_width"       : __backend_inst``.TFLenWidth, \
+                    "mem_sys_depth"      : __backend_inst``.MemSysDepth, \
+                    "combined_shifter"   : __backend_inst``.CombinedShifter, \
+                    "rw_coupling_avail"  : __backend_inst``.RAWCouplingAvail, \
+                    "mask_invalid_data"  : __backend_inst``.MaskInvalidData, \
+                    "hardware_legalizer" : __backend_inst``.HardwareLegalizer, \
+                    "reject_zero_tfs"    : __backend_inst``.RejectZeroTransfers, \
+                    "error_cap"          : __backend_inst``.ErrorCap, \
+                    "print_fifo_info"    : __backend_inst``.PrintFifoInfo \
+                }; \
+                meta = '{ \
+                    "time" : $time() \
+                }; \
+                busy = '{ \
+                    "buffer"      : __backend_inst``.busy_o.buffer_busy, \
+                    "r_dp"        : __backend_inst``.busy_o.r_dp_busy, \
+                    "w_dp"        : __backend_inst``.busy_o.w_dp_busy, \
+                    "r_leg"       : __backend_inst``.busy_o.r_leg_busy, \
+                    "w_leg"       : __backend_inst``.busy_o.w_leg_busy, \
+                    "eh_fsm"      : __backend_inst``.busy_o.eh_fsm_busy, \
+                    "eh_cnt"      : __backend_inst``.busy_o.eh_cnt_busy, \
+                    "raw_coupler" : __backend_inst``.busy_o.raw_coupler_busy \
+                }; \
+                bus = '{ \
+                    "txrx_rsp_valid": __backend_inst``.txrx_read_rsp_i.valid, \
+                    "txrx_rsp_ready": __backend_inst``.txrx_read_req_o.ready, \
+                    "obi_req_valid": __backend_inst``.obi_write_req_o.req, \
+                    "obi_req_ready": __backend_inst``.obi_write_rsp_i.gnt, \
+                    "obi_req_strobe": __backend_inst``.obi_write_req_o.a.be, \
+                    "obi_req_write_en": __backend_inst``.obi_write_req_o.a.we \
+                }; \
+                /* Assembly */ \
+                `IDMA_TRACER_STR_ASSEMBLY(cnst, first_iter); \
+                `IDMA_TRACER_STR_ASSEMBLY(meta, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(busy, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(bus, 1); \
+                `IDMA_TRACER_CLEAR_COND(first_iter); \
+                /* Commit */ \
+                $fwrite(tf, $sformatf("%s}\n", trace)); \
+            end \
+        end \
+    end \
+`endif \
+`endif
+
+// The tracer for the rw_obi_rw_txrx iDMA
+`define IDMA_TRACER_RW_OBI_RW_TXRX(__backend_inst, __out_f) \
+`ifndef SYNTHESYS \
+`ifndef VERILATOR \
+    initial begin : inital_tracer_rw_obi_rw_txrx \
+        automatic bit first_iter = 1; \
+        automatic integer tf; \
+        automatic `IDMA_TRACER_MAX_TYPE cnst [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE meta [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE busy [string]; \
+        automatic `IDMA_TRACER_MAX_TYPE bus [string]; \
+        automatic string trace; \
+        #0; \
+        tf = $fopen(__out_f, "w"); \
+        $display("[iDMA Tracer] Logging %s to %s", `"__backend_inst`", __out_f); \
+        forever begin \
+            @(posedge __backend_inst``.clk_i); \
+            if(__backend_inst``.rst_ni & |__backend_inst``.busy_o) begin \
+                /* Trace */ \
+                trace = "{"; \
+                /* Constants */ \
+                cnst = '{ \
+                    "inst"               : `"__backend_inst`", \
+                    "identifier"         : "rw_obi_rw_txrx", \
+                    "data_width"         : __backend_inst``.DataWidth, \
+                    "addr_width"         : __backend_inst``.AddrWidth, \
+                    "user_width"         : __backend_inst``.UserWidth, \
+                    "axi_id_width"       : __backend_inst``.AxiIdWidth, \
+                    "num_ax_in_flight"   : __backend_inst``.NumAxInFlight, \
+                    "buffer_depth"       : __backend_inst``.BufferDepth, \
+                    "tf_len_width"       : __backend_inst``.TFLenWidth, \
+                    "mem_sys_depth"      : __backend_inst``.MemSysDepth, \
+                    "combined_shifter"   : __backend_inst``.CombinedShifter, \
+                    "rw_coupling_avail"  : __backend_inst``.RAWCouplingAvail, \
+                    "mask_invalid_data"  : __backend_inst``.MaskInvalidData, \
+                    "hardware_legalizer" : __backend_inst``.HardwareLegalizer, \
+                    "reject_zero_tfs"    : __backend_inst``.RejectZeroTransfers, \
+                    "error_cap"          : __backend_inst``.ErrorCap, \
+                    "print_fifo_info"    : __backend_inst``.PrintFifoInfo \
+                }; \
+                meta = '{ \
+                    "time" : $time() \
+                }; \
+                busy = '{ \
+                    "buffer"      : __backend_inst``.busy_o.buffer_busy, \
+                    "r_dp"        : __backend_inst``.busy_o.r_dp_busy, \
+                    "w_dp"        : __backend_inst``.busy_o.w_dp_busy, \
+                    "r_leg"       : __backend_inst``.busy_o.r_leg_busy, \
+                    "w_leg"       : __backend_inst``.busy_o.w_leg_busy, \
+                    "eh_fsm"      : __backend_inst``.busy_o.eh_fsm_busy, \
+                    "eh_cnt"      : __backend_inst``.busy_o.eh_cnt_busy, \
+                    "raw_coupler" : __backend_inst``.busy_o.raw_coupler_busy \
+                }; \
+                bus = '{ \
+                    "obi_rsp_valid": __backend_inst``.obi_read_req_o.req, \
+                    "obi_rsp_ready": __backend_inst``.obi_read_rsp_i.gnt, \
+                    "obi_rsp_write_en": __backend_inst``.obi_read_req_o.a.we, \
+                    "txrx_rsp_valid": __backend_inst``.txrx_read_rsp_i.valid, \
+                    "txrx_rsp_ready": __backend_inst``.txrx_read_req_o.ready, \
+                    "obi_req_valid": __backend_inst``.obi_write_req_o.req, \
+                    "obi_req_ready": __backend_inst``.obi_write_rsp_i.gnt, \
+                    "obi_req_strobe": __backend_inst``.obi_write_req_o.a.be, \
+                    "obi_req_write_en": __backend_inst``.obi_write_req_o.a.we, \
+                    "txrx_req_valid": __backend_inst``.txrx_write_req_o.valid, \
+                    "txrx_req_ready": __backend_inst``.txrx_write_rsp_i.ready \
+                }; \
+                /* Assembly */ \
+                `IDMA_TRACER_STR_ASSEMBLY(cnst, first_iter); \
+                `IDMA_TRACER_STR_ASSEMBLY(meta, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(busy, 1); \
+                `IDMA_TRACER_STR_ASSEMBLY(bus, 1); \
+                `IDMA_TRACER_CLEAR_COND(first_iter); \
+                /* Commit */ \
+                $fwrite(tf, $sformatf("%s}\n", trace)); \
+            end \
+        end \
+    end \
+`endif \
+`endif
+
 // The tracer for the r_obi_rw_init_w_axi iDMA
 `define IDMA_TRACER_R_OBI_RW_INIT_W_AXI(__backend_inst, __out_f) \
 `ifndef SYNTHESYS \
